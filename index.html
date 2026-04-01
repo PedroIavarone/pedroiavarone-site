@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedro Iavarone — Game Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #080810;
+      --surface:  #0f0f1a;
+      --border:   rgba(255,255,255,0.07);
+      --gold:     #d4a843;
+      --gold-dim: rgba(212,168,67,0.12);
+      --text:     #e8e2d4;
+      --muted:    #7a7468;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── grid bg ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(212,168,67,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,168,67,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── noise overlay ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.5;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 3rem;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      background: rgba(8,8,16,0.7);
+    }
+
+    .nav-logo {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--gold); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 8rem 3rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(212,168,67,0.3);
+      padding: 0.4rem 0.9rem;
+      border-radius: 2px;
+      margin-bottom: 1.8rem;
+    }
+
+    .hero-name {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(3.2rem, 6vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-name em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--gold);
+    }
+
+    .hero-bio {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 38ch;
+      margin-bottom: 2.4rem;
+    }
+
+    .hero-bio strong { color: var(--text); font-weight: 600; }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--gold);
+      color: #0a0805;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.85rem 1.8rem;
+      border-radius: 2px;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .hero-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .hero-cta svg { width: 14px; height: 14px; }
+
+    /* ── AVATAR COLUMN ── */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .avatar-ring {
+      position: relative;
+      width: 280px;
+      height: 280px;
+    }
+
+    .avatar-ring::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,168,67,0.25);
+      animation: spin 18s linear infinite;
+    }
+
+    .avatar-ring::after {
+      content: '';
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      border: 1px dashed rgba(212,168,67,0.1);
+      animation: spin 28s linear infinite reverse;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fraunces', serif;
+      font-size: 6rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: -0.05em;
+      user-select: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .avatar-badge {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      z-index: 2;
+      background: var(--gold);
+      color: #0a0805;
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+    }
+
+    /* ── SECTION ── */
+    .section {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 3rem 8rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      margin-bottom: 3.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.5rem;
+    }
+
+    .section-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+    }
+
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── GAME CARDS ── */
+    .games-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .game-card {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2.5rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.3s, transform 0.3s;
+      group: '';
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--card-glow, transparent);
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+
+    .game-card:hover {
+      border-color: var(--card-accent, var(--gold));
+      transform: translateY(-3px);
+    }
+
+    .game-card:hover::before { opacity: 1; }
+
+    /* mine card */
+    .card-mine {
+      --card-accent: #4ade80;
+      --card-glow: radial-gradient(ellipse at 0% 0%, rgba(74,222,128,0.07), transparent 65%);
+    }
+    .card-mine .card-icon { color: #4ade80; }
+    .card-mine .card-tag { background: rgba(74,222,128,0.1); color: #4ade80; }
+    .card-mine .play-btn { background: #4ade80; color: #03100a; }
+
+    /* chess card */
+    .card-chess {
+      --card-accent: #818cf8;
+      --card-glow: radial-gradient(ellipse at 0% 0%, rgba(129,140,248,0.07), transparent 65%);
+    }
+    .card-chess .card-icon { color: #818cf8; }
+    .card-chess .card-tag { background: rgba(129,140,248,0.1); color: #818cf8; }
+    .card-chess .play-btn { background: #818cf8; color: #03030f; }
+
+    .card-number {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .card-icon {
+      font-size: 3.2rem;
+      line-height: 1;
+      margin: 0.2rem 0;
+      transition: transform 0.3s;
+    }
+
+    .game-card:hover .card-icon { transform: scale(1.08) rotate(-3deg); }
+
+    .card-title {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+    }
+
+    .card-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+    }
+
+    .play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
+      padding: 0.55rem 1.1rem;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .play-btn:hover { opacity: 0.8; }
+
+    .play-btn svg { width: 12px; height: 12px; }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-left {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .footer-right {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-style: italic;
+      font-family: 'Fraunces', serif;
+    }
+
+    /* ── ENTER ANIMATION ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeUp 0.7s forwards;
+    }
+
+    .fade-in:nth-child(1) { animation-delay: 0.1s; }
+    .fade-in:nth-child(2) { animation-delay: 0.22s; }
+    .fade-in:nth-child(3) { animation-delay: 0.34s; }
+    .fade-in:nth-child(4) { animation-delay: 0.46s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: none; }
+    }
+
+    .card-fade {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.6s forwards;
+    }
+
+    .card-fade:nth-child(1) { animation-delay: 0.5s; }
+    .card-fade:nth-child(2) { animation-delay: 0.65s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 820px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 7rem 1.5rem 3rem; }
+      .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+      .hero-visual { display: none; }
+      .section { padding: 2rem 1.5rem 5rem; }
+      .games-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">Pedro <span>Iavarone</span></a>
+    <ul class="nav-links">
+      <li><a href="#games">Jogos</a></li>
+      <li><a href="mailto:pedro@pedroiavarone.com">Contato</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="fade-in">
+          <span class="hero-tag">&#9670; Game Hub</span>
+        </div>
+        <h1 class="hero-name fade-in">
+          Pedro<br/><em>Iavarone</em>
+        </h1>
+        <p class="hero-bio fade-in">
+          Bem-vindo ao meu cantinho na internet.<br/>
+          Aqui você vai encontrar os <strong>jogos que eu criei</strong> —
+          do campo minado ao xadrez online. Explore, jogue e divirta-se.
+        </p>
+        <div class="fade-in">
+          <a class="hero-cta" href="#games">
+            Ver os jogos
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="avatar-ring">
+          <div class="avatar-inner">PI</div>
+          <span class="avatar-badge">Online</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAMES -->
+  <section class="section" id="games">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">Jogos</h2>
+    </div>
+
+    <div class="games-grid">
+
+      <!-- Campo Minado -->
+      <a class="game-card card-mine card-fade" href="https://minezao-pedroiavarone.vercel.app/" target="_blank" rel="noopener">
+        <span class="card-number">001</span>
+        <div class="card-icon">💣</div>
+        <h3 class="card-title">Minezão</h3>
+        <p class="card-desc">
+          O clássico Campo Minado reinventado. Desvende o tabuleiro sem explodir — cada clique é uma aposta de lógica e sorte.
+        </p>
+        <div class="card-meta">
+          <span class="card-tag">Single Player</span>
+          <a class="play-btn" href="https://minezao-pedroiavarone.vercel.app/" target="_blank" rel="noopener">
+            Jogar
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </a>
+        </div>
+      </a>
+
+      <!-- Xadrez -->
+      <a class="game-card card-chess card-fade" href="https://chess-do-iavarone.vercel.app/" target="_blank" rel="noopener">
+        <span class="card-number">002</span>
+        <div class="card-icon">♟</div>
+        <h3 class="card-title">Xadrez</h3>
+        <p class="card-desc">
+          Xadrez online multiplayer em tempo real. Crie uma sala, envie o link para um amigo e dispute uma partida clássica.
+        </p>
+        <div class="card-meta">
+          <span class="card-tag">Multiplayer</span>
+          <a class="play-btn" href="https://chess-do-iavarone.vercel.app/" target="_blank" rel="noopener">
+            Jogar
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </a>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-left">© 2025 Pedro Iavarone — pedroiavarone.com</p>
+    <p class="footer-right">feito com código e café ☕</p>
+  </footer>
+
+</body>
+</html>
