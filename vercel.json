@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/minezao/:path*", "destination": "https://minezao-pedroiavarone.vercel.app/:path*" },
+    { "source": "/chess/:path*", "destination": "https://chess-do-iavarone.vercel.app/:path*" }
+  ]
+}
